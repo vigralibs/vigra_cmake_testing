@@ -61,7 +61,7 @@ def rm_fr(path):
         # NOTE: the idea here is that certain git dirs in Windows
         # might be read-only after checkout by cmake, and that prevents
         # rmtree from working. We then forcibly remove the read-only flag
-        # and attempte rmtree again.
+        # and remove the offending file.
         shutil.rmtree(path, onerror=del_rw)
     elif os.path.exists(path):
         os.remove(path)
