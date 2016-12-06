@@ -108,16 +108,21 @@ class zlib_test_01(unittest.TestCase):
 
     def test_main(self):
         import os
+        import platform
         include_dirs = [os.path.join('zlib_test_01', 'external', 'ZLIB'), os.path.join('zlib_test_01', 'external', 'ZLIB', 'build_external_dep')]
         rm_fr(default_build_dir('zlib_test_01'))
         rm_fr(default_external_dir('zlib_test_01'))
-        cmake_configure('zlib_test_01', r'-DAUTOBUILD_TESTS=yes -DAUTOEXEC_TESTS=no')
+        cmake_configure('zlib_test_01')
         out = grep(cmake_build('zlib_test_01'),'main.cpp')
         # Check that the include dirs of the live dependency are passed in
         # while building main.
         self.assertTrue(grep(out,include_dirs[0]))
         self.assertTrue(grep(out,include_dirs[1]))
+        if 'Windows' in platform.system():
+            os.system(os.path.join(default_build_dir('zlib_test_01'),'vad_activate_Debug.bat'))
         cmake_test('zlib_test_01')
+        if 'Windows' in platform.system():
+            os.system(os.path.join(default_build_dir('zlib_test_01'),'vad_deactivate_Debug.bat'))
 
 
 if __name__ == '__main__':
