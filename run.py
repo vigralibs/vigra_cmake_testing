@@ -15,11 +15,11 @@ else:
     repo = Repo("vigra_cmake")
 
 
-def run_unbuffered_command(raw_command, directory):
+def run_unbuffered_command(raw_command, directory, **kwargs):
     import shlex
     from subprocess import Popen, PIPE, STDOUT
     proc = Popen(shlex.split(raw_command), cwd=directory,
-                 stdout=PIPE, stderr=STDOUT)
+                 stdout=PIPE, stderr=STDOUT, **kwargs)
     output = ''
     while True:
         line = proc.stdout.readline()
@@ -119,10 +119,12 @@ class zlib_test_01(unittest.TestCase):
         self.assertTrue(grep(out,include_dirs[0]))
         self.assertTrue(grep(out,include_dirs[1]))
         if 'Windows' in platform.system():
-            os.system(os.path.join(default_build_dir('zlib_test_01'),'vad_activate_Debug.bat'))
+            original_path = os.environ['PATH']
+            extra_path = open(os.path.join(default_build_dir('zlib_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
+            os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
         cmake_test('zlib_test_01')
         if 'Windows' in platform.system():
-            os.system(os.path.join(default_build_dir('zlib_test_01'),'vad_deactivate_Debug.bat'))
+            os.environ['PATH'] = original_path
 
 
 if __name__ == '__main__':
