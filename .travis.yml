@@ -1,0 +1,22 @@
+language: cpp
+sudo: false
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    - george-edison55-precise-backports
+    packages:
+    - g++-4.8
+    - cmake
+    - cmake-data
+    - python
+
+matrix:
+  include:
+    - compiler: gcc
+
+script:
+    - python run.py
+
+notifications:
+  email: false
