@@ -17,6 +17,7 @@ matrix:
 
 install:
     - pip install --user gitpython
+    - pip install --user six
 
 script:
     - python run.py

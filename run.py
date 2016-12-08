@@ -1,6 +1,7 @@
 import os
 import unittest
 from git import Repo
+from six import text_type
 
 VERBOSE = True
 
@@ -25,7 +26,7 @@ def run_unbuffered_command(raw_command, directory, **kwargs):
         line = proc.stdout.readline()
         if not line:
             break
-        line = str(line,'utf-8')
+        line = text_type(line,'utf-8')
         if VERBOSE:
             print(line[:-1])
         output += line
