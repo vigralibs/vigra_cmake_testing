@@ -10,7 +10,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../vigra_cmake")
 
 set(VAD_VERBOSE TRUE)
 include(VigraAddDep)
-include(VigraAddExecutable)
 
 vigra_add_dep(ZLIB LIVE)
 add_executable(test_main test_main.cpp)

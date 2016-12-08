@@ -12,6 +12,6 @@ set(VAD_VERBOSE TRUE)
 include(VigraAddDep)
 
 vigra_add_dep(ZLIB)
-
 add_executable(main main.cpp)
 target_link_libraries(main ZLIB::ZLIB)
+add_test(test_main main)
