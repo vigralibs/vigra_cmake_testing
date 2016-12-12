@@ -132,7 +132,9 @@ class zlib_test_01(unittest.TestCase):
         self.assertTrue(grep(out,include_dirs[1]))
         if 'Windows' in platform.system():
             original_path = os.environ['PATH']
-            extra_path = open(os.path.join(default_build_dir('zlib_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
+            fpath = open(os.path.join(default_build_dir('zlib_test_01'),'.vad','vad_path_Debug'))
+            extra_path = fpath.readline()[:-1]
+            fpath.close()
             os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
         cmake_test('zlib_test_01', test_opts)
         if 'Windows' in platform.system():
@@ -172,7 +174,9 @@ class tiff_test_01(unittest.TestCase):
         self.assertTrue(grep(out,include_dirs[1]))
         if 'Windows' in platform.system():
             original_path = os.environ['PATH']
-            extra_path = open(os.path.join(default_build_dir('tiff_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
+            fpath = open(os.path.join(default_build_dir('tiff_test_01'),'.vad','vad_path_Debug'))
+            extra_path = fpath.readline()[:-1]
+            fpath.close()
             print("Adding the following entries to the PATH: " + extra_path)
             os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
         cmake_test('tiff_test_01', test_opts)
