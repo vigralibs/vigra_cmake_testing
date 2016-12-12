@@ -26,7 +26,7 @@ def run_unbuffered_command(raw_command, directory, **kwargs):
         line = proc.stdout.readline()
         if not line:
             break
-        line = text_type(line,'utf-8', errors='ignore')
+        line = text_type(line, 'utf-8', errors='ignore')
         if VERBOSE:
             print(line[:-1])
         output += line
@@ -36,7 +36,7 @@ def run_unbuffered_command(raw_command, directory, **kwargs):
     return output
 
 
-def grep(s,substr):
+def grep(s, substr):
     l = s.split('\n')
     return '\n'.join([_ for _ in l if substr in _])
 
@@ -46,10 +46,12 @@ def default_build_dir(testname):
     base_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(base_dir, testname, 'build')
 
+
 def default_external_dir(testname):
     import os
     base_dir = os.path.dirname(os.path.realpath(__file__))
     return os.path.join(base_dir, testname, 'external')
+
 
 def rm_fr(path):
     import os
@@ -67,7 +69,8 @@ def rm_fr(path):
     elif os.path.exists(path):
         os.remove(path)
 
-def cmake_configure(testname,extra_param = None):
+
+def cmake_configure(testname, extra_param=None):
     import shutil
     import os
     build_dir = default_build_dir(testname)
@@ -89,7 +92,7 @@ def cmake_build(testname):
     return run_unbuffered_command(r'cmake --build .', build_dir)
 
 
-def cmake_test(testname, extra_param = None):
+def cmake_test(testname, extra_param=None):
     build_dir = default_build_dir(testname)
     if extra_param is None:
         return run_unbuffered_command(r'ctest', build_dir)
@@ -101,13 +104,14 @@ class zlib_test_00(unittest.TestCase):
 
     def test_main(self):
         import platform
+        tname = type(self).__name__
         if 'Windows' in platform.system():
             return
-        rm_fr(default_build_dir('zlib_test_00'))
-        rm_fr(default_external_dir('zlib_test_00'))
-        cmake_configure('zlib_test_00')
-        cmake_build('zlib_test_00')
-        cmake_test('zlib_test_00')
+        rm_fr(default_build_dir(tname))
+        rm_fr(default_external_dir(tname))
+        cmake_configure(tname)
+        cmake_build(tname)
+        cmake_test(tname)
 
 
 class zlib_test_01(unittest.TestCase):
@@ -115,71 +119,80 @@ class zlib_test_01(unittest.TestCase):
     def test_main(self):
         import os
         import platform
-        include_dirs = [os.path.join('zlib_test_01', 'external', 'ZLIB'), os.path.join('zlib_test_01', 'external', 'ZLIB', 'build_external_dep')]
-        rm_fr(default_build_dir('zlib_test_01'))
-        rm_fr(default_external_dir('zlib_test_01'))
+        tname = type(self).__name__
+        include_dirs = [os.path.join(tname, 'external', 'ZLIB'), os.path.join(
+            tname, 'external', 'ZLIB', 'build_external_dep')]
+        rm_fr(default_build_dir(tname))
+        rm_fr(default_external_dir(tname))
         if 'Windows' in platform.system():
             conf_opts = '-G "Visual Studio 14 2015 Win64"'
             test_opts = '-C Debug'
         else:
             conf_opts = None
             test_opts = None
-        cmake_configure('zlib_test_01', conf_opts)
-        out = grep(cmake_build('zlib_test_01'),'main.cpp')
+        cmake_configure(tname, conf_opts)
+        out = grep(cmake_build(tname), 'main.cpp')
         # Check that the include dirs of the live dependency are passed in
         # while building main.
-        self.assertTrue(grep(out,include_dirs[0]))
-        self.assertTrue(grep(out,include_dirs[1]))
+        self.assertTrue(grep(out, include_dirs[0]))
+        self.assertTrue(grep(out, include_dirs[1]))
         if 'Windows' in platform.system():
             original_path = os.environ['PATH']
-            fpath = open(os.path.join(default_build_dir('zlib_test_01'),'.vad','vad_path_Debug'))
+            fpath = open(os.path.join(default_build_dir(
+                tname), '.vad', 'vad_path_Debug'))
             extra_path = fpath.readline()[:-1]
             fpath.close()
-            os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
-        cmake_test('zlib_test_01', test_opts)
+            os.environ['PATH'] = extra_path + ';' + os.environ['PATH']
+        cmake_test(tname, test_opts)
         if 'Windows' in platform.system():
             os.environ['PATH'] = original_path
+
 
 class tiff_test_00(unittest.TestCase):
 
     def test_main(self):
         import platform
+        tname = type(self).__name__
         if 'Windows' in platform.system():
             return
-        rm_fr(default_build_dir('tiff_test_00'))
-        rm_fr(default_external_dir('tiff_test_00'))
-        cmake_configure('tiff_test_00')
-        cmake_build('tiff_test_00')
-        cmake_test('tiff_test_00')
+        rm_fr(default_build_dir(tname))
+        rm_fr(default_external_dir(tname))
+        cmake_configure(tname)
+        cmake_build(tname)
+        cmake_test(tname)
+
 
 class tiff_test_01(unittest.TestCase):
 
     def test_main(self):
         import os
         import platform
-        include_dirs = [os.path.join('tiff_test_01', 'external', 'TIFF'), os.path.join('tiff_test_01', 'external', 'TIFF', 'build_external_dep')]
-        rm_fr(default_build_dir('tiff_test_01'))
-        rm_fr(default_external_dir('tiff_test_01'))
+        tname = type(self).__name__
+        include_dirs = [os.path.join(tname, 'external', 'TIFF'), os.path.join(
+            tname, 'external', 'TIFF', 'build_external_dep')]
+        rm_fr(default_build_dir(tname))
+        rm_fr(default_external_dir(tname))
         if 'Windows' in platform.system():
             conf_opts = '-G "Visual Studio 14 2015 Win64"'
             test_opts = '-C Debug'
         else:
             conf_opts = None
             test_opts = None
-        cmake_configure('tiff_test_01', conf_opts)
-        out = grep(cmake_build('tiff_test_01'),'main.cpp')
+        cmake_configure(tname, conf_opts)
+        out = grep(cmake_build(tname), 'main.cpp')
         # Check that the include dirs of the live dependency are passed in
         # while building main.
-        self.assertTrue(grep(out,include_dirs[0]))
-        self.assertTrue(grep(out,include_dirs[1]))
+        self.assertTrue(grep(out, include_dirs[0]))
+        self.assertTrue(grep(out, include_dirs[1]))
         if 'Windows' in platform.system():
             original_path = os.environ['PATH']
-            fpath = open(os.path.join(default_build_dir('tiff_test_01'),'.vad','vad_path_Debug'))
+            fpath = open(os.path.join(default_build_dir(
+                tname), '.vad', 'vad_path_Debug'))
             extra_path = fpath.readline()[:-1]
             fpath.close()
             print("Adding the following entries to the PATH: " + extra_path)
-            os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
-        cmake_test('tiff_test_01', test_opts)
+            os.environ['PATH'] = extra_path + ';' + os.environ['PATH']
+        cmake_test(tname, test_opts)
         if 'Windows' in platform.system():
             os.environ['PATH'] = original_path
 
