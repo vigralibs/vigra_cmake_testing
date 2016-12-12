@@ -114,7 +114,11 @@ class zlib_test_01(unittest.TestCase):
         include_dirs = [os.path.join('zlib_test_01', 'external', 'ZLIB'), os.path.join('zlib_test_01', 'external', 'ZLIB', 'build_external_dep')]
         rm_fr(default_build_dir('zlib_test_01'))
         rm_fr(default_external_dir('zlib_test_01'))
-        cmake_configure('zlib_test_01')
+        if 'Windows' in platform.system():
+            conf_opts = '-G "Visual Studio 14 2015 Win64"'
+        else:
+            conf_opts = None
+        cmake_configure('zlib_test_01', conf_opts)
         out = grep(cmake_build('zlib_test_01'),'main.cpp')
         # Check that the include dirs of the live dependency are passed in
         # while building main.
@@ -148,7 +152,11 @@ class tiff_test_01(unittest.TestCase):
         include_dirs = [os.path.join('tiff_test_01', 'external', 'TIFF'), os.path.join('tiff_test_01', 'external', 'TIFF', 'build_external_dep')]
         rm_fr(default_build_dir('tiff_test_01'))
         rm_fr(default_external_dir('tiff_test_01'))
-        cmake_configure('tiff_test_01')
+        if 'Windows' in platform.system():
+            conf_opts = '-G "Visual Studio 14 2015 Win64"'
+        else:
+            conf_opts = None
+        cmake_configure('tiff_test_01', conf_opts)
         out = grep(cmake_build('tiff_test_01'),'main.cpp')
         # Check that the include dirs of the live dependency are passed in
         # while building main.
