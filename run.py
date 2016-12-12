@@ -173,6 +173,7 @@ class tiff_test_01(unittest.TestCase):
         if 'Windows' in platform.system():
             original_path = os.environ['PATH']
             extra_path = open(os.path.join(default_build_dir('tiff_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
+            print("Adding the following entries to the PATH: " + extra_path)
             os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
         cmake_test('tiff_test_01', test_opts)
         if 'Windows' in platform.system():
