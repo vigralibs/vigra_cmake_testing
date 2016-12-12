@@ -89,9 +89,13 @@ def cmake_build(testname):
     return run_unbuffered_command(r'cmake --build .', build_dir)
 
 
-def cmake_test(testname):
+def cmake_test(testname, extra_param = None):
     build_dir = default_build_dir(testname)
-    return run_unbuffered_command(r'ctest', build_dir)
+    if extra_param is None:
+        return run_unbuffered_command(r'ctest', build_dir)
+    else:
+        return run_unbuffered_command(r'ctest ' + extra_param, build_dir)
+
 
 class zlib_test_00(unittest.TestCase):
 
@@ -116,8 +120,10 @@ class zlib_test_01(unittest.TestCase):
         rm_fr(default_external_dir('zlib_test_01'))
         if 'Windows' in platform.system():
             conf_opts = '-G "Visual Studio 14 2015 Win64"'
+            test_opts = '-C Debug'
         else:
             conf_opts = None
+            test_opts = None
         cmake_configure('zlib_test_01', conf_opts)
         out = grep(cmake_build('zlib_test_01'),'main.cpp')
         # Check that the include dirs of the live dependency are passed in
@@ -128,7 +134,7 @@ class zlib_test_01(unittest.TestCase):
             original_path = os.environ['PATH']
             extra_path = open(os.path.join(default_build_dir('zlib_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
             os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
-        cmake_test('zlib_test_01')
+        cmake_test('zlib_test_01', test_opts)
         if 'Windows' in platform.system():
             os.environ['PATH'] = original_path
 
@@ -154,8 +160,10 @@ class tiff_test_01(unittest.TestCase):
         rm_fr(default_external_dir('tiff_test_01'))
         if 'Windows' in platform.system():
             conf_opts = '-G "Visual Studio 14 2015 Win64"'
+            test_opts = '-C Debug'
         else:
             conf_opts = None
+            test_opts = None
         cmake_configure('tiff_test_01', conf_opts)
         out = grep(cmake_build('tiff_test_01'),'main.cpp')
         # Check that the include dirs of the live dependency are passed in
@@ -166,7 +174,7 @@ class tiff_test_01(unittest.TestCase):
             original_path = os.environ['PATH']
             extra_path = open(os.path.join(default_build_dir('tiff_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
             os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
-        cmake_test('tiff_test_01')
+        cmake_test('tiff_test_01', test_opts)
         if 'Windows' in platform.system():
             os.environ['PATH'] = original_path
 
