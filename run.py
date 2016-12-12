@@ -103,6 +103,7 @@ class zlib_test_00(unittest.TestCase):
         rm_fr(default_external_dir('zlib_test_00'))
         cmake_configure('zlib_test_00')
         cmake_build('zlib_test_00')
+        cmake_test('zlib_test_00')
 
 
 class zlib_test_01(unittest.TestCase):
@@ -137,6 +138,7 @@ class tiff_test_00(unittest.TestCase):
         rm_fr(default_external_dir('tiff_test_00'))
         cmake_configure('tiff_test_00')
         cmake_build('tiff_test_00')
+        cmake_test('tiff_test_01')
 
 class tiff_test_01(unittest.TestCase):
 
