@@ -100,6 +100,27 @@ def cmake_test(testname, extra_param=None):
         return run_unbuffered_command(r'ctest ' + extra_param, build_dir)
 
 
+class path_ctx(object):
+
+    def __init__(self, tname):
+        self._tname = tname
+
+    def __enter__(self):
+        import platform
+        import os
+        if 'Windows' in platform.system():
+            self._original_path = os.environ['PATH']
+            with open(os.path.join(default_build_dir(self._tname), '.vad', 'vad_path_Debug')) as fpath:
+                extra_path = fpath.readline()[:-1]
+            os.environ['PATH'] = extra_path + ';' + os.environ['PATH']
+
+    def __exit__(self, *args):
+        import platform
+        import os
+        if 'Windows' in platform.system():
+            os.environ['PATH'] = self._original_path
+
+
 class zlib_test_00(unittest.TestCase):
 
     def test_main(self):
@@ -136,16 +157,8 @@ class zlib_test_01(unittest.TestCase):
         # while building main.
         self.assertTrue(grep(out, include_dirs[0]))
         self.assertTrue(grep(out, include_dirs[1]))
-        if 'Windows' in platform.system():
-            original_path = os.environ['PATH']
-            fpath = open(os.path.join(default_build_dir(
-                tname), '.vad', 'vad_path_Debug'))
-            extra_path = fpath.readline()[:-1]
-            fpath.close()
-            os.environ['PATH'] = extra_path + ';' + os.environ['PATH']
-        cmake_test(tname, test_opts)
-        if 'Windows' in platform.system():
-            os.environ['PATH'] = original_path
+        with path_ctx(tname):
+            cmake_test(tname, test_opts)
 
 
 class tiff_test_00(unittest.TestCase):
@@ -184,17 +197,8 @@ class tiff_test_01(unittest.TestCase):
         # while building main.
         self.assertTrue(grep(out, include_dirs[0]))
         self.assertTrue(grep(out, include_dirs[1]))
-        if 'Windows' in platform.system():
-            original_path = os.environ['PATH']
-            fpath = open(os.path.join(default_build_dir(
-                tname), '.vad', 'vad_path_Debug'))
-            extra_path = fpath.readline()[:-1]
-            fpath.close()
-            print("Adding the following entries to the PATH: " + extra_path)
-            os.environ['PATH'] = extra_path + ';' + os.environ['PATH']
-        cmake_test(tname, test_opts)
-        if 'Windows' in platform.system():
-            os.environ['PATH'] = original_path
+        with path_ctx(tname):
+            cmake_test(tname, test_opts)
 
 if __name__ == '__main__':
     unittest.main()
