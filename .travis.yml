@@ -20,7 +20,7 @@ install:
     - pip install --user six
 
 script:
-    - python run.py
+    - python run.py -f
 
 notifications:
   email: false
