@@ -26,7 +26,7 @@ def run_unbuffered_command(raw_command, directory, **kwargs):
         line = proc.stdout.readline()
         if not line:
             break
-        line = text_type(line,'utf-8')
+        line = text_type(line,'utf-8', errors='ignore')
         if VERBOSE:
             print(line[:-1])
         output += line
