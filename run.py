@@ -127,6 +127,38 @@ class zlib_test_01(unittest.TestCase):
         if 'Windows' in platform.system():
             os.environ['PATH'] = original_path
 
+class tiff_test_00(unittest.TestCase):
+
+    def test_main(self):
+        import platform
+        if 'Windows' in platform.system():
+            return
+        rm_fr(default_build_dir('tiff_test_00'))
+        rm_fr(default_external_dir('tiff_test_00'))
+        cmake_configure('tiff_test_00')
+        cmake_build('tiff_test_00')
+
+class tiff_test_01(unittest.TestCase):
+
+    def test_main(self):
+        import os
+        import platform
+        include_dirs = [os.path.join('tiff_test_01', 'external', 'TIFF'), os.path.join('tiff_test_01', 'external', 'TIFF', 'build_external_dep')]
+        rm_fr(default_build_dir('tiff_test_01'))
+        rm_fr(default_external_dir('tiff_test_01'))
+        cmake_configure('tiff_test_01')
+        out = grep(cmake_build('tiff_test_01'),'main.cpp')
+        # Check that the include dirs of the live dependency are passed in
+        # while building main.
+        self.assertTrue(grep(out,include_dirs[0]))
+        self.assertTrue(grep(out,include_dirs[1]))
+        if 'Windows' in platform.system():
+            original_path = os.environ['PATH']
+            extra_path = open(os.path.join(default_build_dir('tiff_test_01'),'.vad','vad_path_Debug')).readline()[:-1]
+            os.environ['PATH'] =  extra_path + ';' + os.environ['PATH']
+        cmake_test('tiff_test_01')
+        if 'Windows' in platform.system():
+            os.environ['PATH'] = original_path
 
 if __name__ == '__main__':
     unittest.main()
