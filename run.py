@@ -200,5 +200,30 @@ class tiff_test_01(unittest.TestCase):
         with path_ctx(tname):
             cmake_test(tname, test_opts)
 
+class png_test_01(unittest.TestCase):
+
+    def test_main(self):
+        import os
+        import platform
+        tname = type(self).__name__
+        include_dirs = [os.path.join(tname, 'external', 'PNG'), os.path.join(
+            tname, 'external', 'PNG', 'build_external_dep')]
+        rm_fr(default_build_dir(tname))
+        rm_fr(default_external_dir(tname))
+        if 'Windows' in platform.system():
+            conf_opts = '-G "Visual Studio 14 2015 Win64"'
+            test_opts = '-C Debug'
+        else:
+            conf_opts = None
+            test_opts = None
+        cmake_configure(tname, conf_opts)
+        out = grep(cmake_build(tname), 'main.cpp')
+        # Check that the include dirs of the live dependency are passed in
+        # while building main.
+        self.assertTrue(grep(out, include_dirs[0]))
+        self.assertTrue(grep(out, include_dirs[1]))
+        with path_ctx(tname):
+            cmake_test(tname, test_opts)
+
 if __name__ == '__main__':
     unittest.main()
